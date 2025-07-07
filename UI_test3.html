@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoNiche Intelligence - AI-Powered Niche Research Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .tool-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .input-section {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .input-group {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .analyze-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .analyze-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results-section {
+            display: none;
+        }
+
+        .niche-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s;
+        }
+
+        .niche-card:hover {
+            transform: translateX(5px);
+        }
+
+        .niche-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score-badge {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .niche-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-icon {
+            width: 20px;
+            height: 20px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .keywords-section {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .keywords-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .keywords-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .keyword-tag {
+            background: #f0f2f5;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .monetization-section {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .monetization-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .monetization-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .method-item {
+            background: rgba(255,255,255,0.3);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .premium-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .premium-modal {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .premium-modal h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .close-modal {
+            background: #ccc;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .input-section {
+                flex-direction: column;
+            }
+            
+            .tool-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AutoNiche Intelligence</h1>
+            <p>AI-Powered Niche Research & Market Analysis Tool</p>
+        </div>
+
+        <div class="tool-section">
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="category">Main Category</label>
+                    <select id="category">
+                        <option value="">Select a category...</option>
+                        <option value="health">Health & Fitness</option>
+                        <option value="technology">Technology</option>
+                        <option value="finance">Finance & Investment</option>
+                        <option value="lifestyle">Lifestyle & Wellness</option>
+                        <option value="education">Education & Learning</option>
+                        <option value="business">Business & Entrepreneurship</option>
+                        <option value="travel">Travel & Adventure</option>
+                        <option value="food">Food & Cooking</option>
+                        <option value="pets">Pets & Animals</option>
+                        <option value="gaming">Gaming & Entertainment</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="audience">Target Audience</label>
+                    <select id="audience">
+                        <option value="">Select audience...</option>
+                        <option value="beginners">Beginners</option>
+                        <option value="professionals">Professionals</option>
+                        <option value="students">Students</option>
+                        <option value="seniors">Seniors (50+)</option>
+                        <option value="parents">Parents</option>
+                        <option value="millennials">Millennials</option>
+                        <option value="entrepreneurs">Entrepreneurs</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="budget">Budget Range</label>
+                    <select id="budget">
+                        <option value="">Select budget...</option>
+                        <option value="low">Low ($0-$50)</option>
+                        <option value="medium">Medium ($50-$200)</option>
+                        <option value="high">High ($200+)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="analyze-btn" onclick="analyzeNiches()">
+                🔍 Analyze Profitable Niches
+            </button>
+
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>AI is analyzing market data and identifying profitable niches...</p>
+            </div>
+
+            <div id="results" class="results-section">
+                <h2 style="margin-bottom: 30px; color: #333;">📊 Profitable Niche Analysis Results</h2>
+                <div id="niches-container"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2024 AutoNiche Intelligence - Fully Automated Niche Research Tool</p>
+            <p>Built with AI • Updated in Real-Time • 100% Data-Driven</p>
+        </div>
+    </div>
+
+    <div id="premium-overlay" class="premium-overlay">
+        <div class="premium-modal">
+            <h3>🚀 Unlock Premium Features</h3>
+            <p>Get unlimited niche analysis, competitor research, and detailed market reports for just ₹499/month.</p>
+            <ul style="text-align: left; margin: 20px 0;">
+                <li>✅ Unlimited niche analysis</li>
+                <li>✅ Competitor keyword research</li>
+                <li>✅ Revenue potential calculator</li>
+                <li>✅ Content calendar generator</li>
+                <li>✅ Market trend predictions</li>
+            </ul>
+            <button class="analyze-btn" onclick="upgradeNow()">Upgrade Now - ₹499/month</button>
+            <button class="close-modal" onclick="closeModal()">Continue with Free Version</button>
+        </div>
+    </div>
+
+    <script>
+        // No longer needed if fetching live data
+        // const nicheDatabase = { ... }; 
+
+        let usageCount = 0;
+        const maxFreeUsage = 3;
+        // Replace with your actual n8n webhook URL from your Replit deployment
+        const N8N_WEBHOOK_URL = 'https://workspace.pankajjangid.repl.co/webhook-test/webhook-test/c8ba11a0-3d2f-4be2-9aab-f606172a92f2'; 
+
+        async function analyzeNiches() {
+            const category = document.getElementById('category').value;
+            const audience = document.getElementById('audience').value;
+            const budget = document.getElementById('budget').value;
+
+            if (!category) {
+                alert('Please select a category to analyze');
+                return;
+            }
+
+            // Check usage limit
+            if (usageCount >= maxFreeUsage) {
+                showPremiumModal();
+                return;
+            }
+
+            usageCount++;
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+
+            try {
+                const response = await fetch(N8N_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ category, audience, budget }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('Data received from n8n:', data);
+
+                // Assuming n8n returns an array of niche objects directly
+                displayResults(data); 
+
+            } catch (error) {
+                console.error('Error fetching niche data:', error);
+                alert('Failed to fetch niche data. Please try again later.');
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('results').style.display = 'block';
+            }
+        }
+
+        // Modified displayResults to accept the array of niches directly
+        function displayResults(niches) {
+            const container = document.getElementById('niches-container');
+            
+            container.innerHTML = ''; // Clear previous results
+
+            if (niches && niches.length > 0) {
+                niches.forEach(niche => {
+                    const nicheCard = createNicheCard(niche);
+                    container.appendChild(nicheCard);
+                });
+            } else {
+                container.innerHTML = '<p style="text-align: center; color: #555;">No profitable niches found for your criteria. Try different selections!</p>';
+            }
+
+            // Add usage indicator
+            const usageIndicator = document.createElement('div');
+            usageIndicator.style.cssText = 'text-align: center; margin: 20px 0; padding: 15px; background: #f0f2f5; border-radius: 10px;';
+            usageIndicator.innerHTML = `
+                <p><strong>Free Usage:</strong> ${usageCount}/${maxFreeUsage} searches used</p>
+                ${usageCount >= maxFreeUsage ? '<p style="color: #667eea;">Upgrade to Premium for unlimited access!</p>' : ''}
+            `;
+            container.appendChild(usageIndicator);
+        }
+
+        function createNicheCard(niche) {
+            const card = document.createElement('div');
+            card.className = 'niche-card';
+            
+            card.innerHTML = `
+                <div class="niche-title">
+                    <span>${niche.name}</span>
+                    <span class="score-badge">Score: ${niche.score}/100</span>
+                </div>
+                
+                <div class="niche-details">
+                    <div class="detail-item">
+                        <div class="detail-icon">📊</div>
+                        <span><strong>Search Volume:</strong> ${niche.searchVolume || 'N/A'}/month</span>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon">⚡</div>
+                        <span><strong>Competition:</strong> ${niche.competition || 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon">💰</div>
+                        <span><strong>CPC:</strong> ${niche.cpc || 'N/A'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon">📈</div>
+                        <span><strong>Trend:</strong> ${niche.trend || 'N/A'}</span>
+                    </div>
+                </div>
+
+                <div class="keywords-section">
+                    <div class="keywords-title">🎯 High-Value Keywords:</div>
+                    <div class="keywords-list">
+                        ${niche.keywords && niche.keywords.length > 0 ? niche.keywords.map(keyword => `<span class="keyword-tag">${keyword}</span>`).join('') : '<span class="keyword-tag">No keywords found</span>'}
+                    </div>
+                </div>
+
+                <div class="monetization-section">
+                    <div class="monetization-title">💎 Monetization Opportunities:</div>
+                    <div class="monetization-methods">
+                        ${niche.monetization && niche.monetization.length > 0 ? niche.monetization.map(method => `<div class="method-item">• ${method}</div>`).join('') : '<div class="method-item">No monetization methods suggested</div>'}
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        function showPremiumModal() {
+            document.getElementById('premium-overlay').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('premium-overlay').style.display = 'none';
+        }
+
+        function upgradeNow() {
+            alert('🚀 Redirecting to premium signup... (This is a demo - actual payment integration would go here)');
+            closeModal();
+        }
+
+        // Auto-populate trending data on page load
+        window.addEventListener('load', function() {
+            console.log('AutoNiche Intelligence Tool Loaded');
+            console.log('Real-time data integration active');
+            
+            // This interval for background data updates is now less relevant for client-side fetching
+            // It would make more sense if there was a continuous push from a backend.
+            setInterval(() => {
+                console.log('Background: Simulating real-time data integration status...');
+            }, 30000); // Every 30 seconds
+        });
+
+        // Add some interactivity for better UX
+        document.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', function() {
+                if (this.value) {
+                    this.style.borderColor = '#667eea';
+                    this.style.background = '#f8f9ff';
+                } else {
+                    this.style.borderColor = '#e0e0e0'; // Reset if empty
+                    this.style.background = 'white';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
